@@ -9,9 +9,8 @@ upstairs/downstairs) from smartphone accelerometer and gyroscope signals.
 ## Why this project
 
 Human Activity Recognition is the core technology behind **fall detection,
-elderly-care monitoring, and rehabilitation tracking** — the assistive-systems
-domain studied at the Institute of Data Science, University of Greifswald
-(BehavE / ARDUOUS / Healthy Ageing).
+elderly-care monitoring, and rehabilitation tracking** — a key building block
+in assistive health systems and healthy-ageing research.
 
 This project is built following the **CRISP-DM** methodology, one phase at a
 time, with an emphasis on understanding and explaining every decision — not
@@ -34,7 +33,7 @@ just producing numbers.
 
 ## Roadmap (CRISP-DM)
 
-- [ ] Phase 1 — Business Understanding
+- [x] Phase 1 — Business Understanding ([write-up](reports/01_business_understanding.md))
 - [ ] Phase 2 — Data Understanding
 - [ ] Phase 3 — Data Preparation
 - [ ] Phase 4 — Modeling (baseline + deep learning)
