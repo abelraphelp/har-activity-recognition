@@ -35,7 +35,7 @@ just producing numbers.
 
 - [x] Phase 1 — Business Understanding ([write-up](reports/01_business_understanding.md))
 - [x] Phase 2 — Data Understanding ([write-up](reports/02_data_understanding.md))
-- [ ] Phase 3 — Data Preparation
+- [x] Phase 3 — Data Preparation ([write-up](reports/03_data_preparation.md))
 - [ ] Phase 4 — Modeling (baseline + deep learning)
 - [ ] Phase 5 — Evaluation
 - [ ] Phase 6 — Deployment / Communication
