@@ -85,6 +85,21 @@ testing:
 - The real limits are **per-subject variance** (worst subjects ~0.73), the **sitting/standing
   sensor limit**, and **fixed-window transition artifacts** — not model choice.
 
+## Second dataset: PAMAP2 (v3)
+
+Applying the pipeline to a raw, harder dataset ([full write-up](reports/08_pamap2.md)):
+9 subjects, 12 activities, 3 IMUs, continuous 100 Hz streams we segment ourselves.
+
+![PAMAP2 results](reports/figures/pamap2_results.png)
+
+- **Subject-independent (LOSO) accuracy 0.756 ± 0.167** — ~0.81 for typical subjects, but
+  **one subject collapses to 0.30** (a real per-person domain shift). Per-subject
+  generalization is the core HAR challenge, and it worsens on realistic data.
+- **Transition-aware windowing:** windows straddling an activity boundary are
+  **near-unclassifiable** (0.075 vs 0.837, ≈ 12-class chance) — confirming the transition
+  hypothesis from the UCI HAR error analysis. They are rare in this lab protocol (~1.4%),
+  so the overall gain is small, but the effect would be large in free-living data.
+
 ## Interactive demo
 
 An accessibility-focused Streamlit app (light high-contrast theme, large text,
@@ -152,3 +167,4 @@ python src/download_data.py
 - [x] Phase 5 — Evaluation ([summary](reports/06_evaluation.md))
 - [x] Phase 6 — Communication (this README + limitations); *Streamlit demo optional/next*
 - [x] Advanced experiments (v2) — [tuning, LSTM, LOSO-CV, statistical tests](reports/07_advanced_experiments.md)
+- [x] Second dataset (v3) — [PAMAP2 + transition-aware windowing](reports/08_pamap2.md)
