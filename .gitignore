@@ -21,6 +21,7 @@ env/
 *.pth
 *.pkl
 *.h5
+models/
 
 # ─── OS / editor / tooling cruft ────────────────────────
 .DS_Store

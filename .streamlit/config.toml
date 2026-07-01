@@ -1,0 +1,8 @@
+[theme]
+# Light, high-contrast theme for accessibility (assistive-care context).
+base = "light"
+primaryColor = "#00695C"            # deep teal — strong contrast on white
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#EEF3F6"
+textColor = "#1A1A1A"               # near-black for maximum legibility
+font = "sans serif"

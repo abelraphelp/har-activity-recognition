@@ -69,6 +69,20 @@ windows (128 samples). Provided in two forms: **561 pre-computed features** and 
 
 ![Ensemble confusion matrix](reports/figures/ensemble_confusion_matrix.png)
 
+## Interactive demo
+
+An accessibility-focused Streamlit app (light high-contrast theme, large text,
+colour-blind-safe plots) lets you browse recordings from **unseen test subjects**, view
+the raw sensor signals, and see the ensemble's prediction and confidence — including its
+failure modes.
+
+![Streamlit demo](reports/figures/streamlit_demo.png)
+
+```bash
+# regenerate the model files by running notebooks/02_modeling.ipynb, then:
+streamlit run app/streamlit_app.py
+```
+
 ## Limitations & future work
 
 - **Sitting vs. standing** is capped by the sensor placement, not the model — richer
