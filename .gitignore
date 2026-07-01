@@ -1,0 +1,28 @@
+# ─── Data ───────────────────────────────────────────────
+# Never commit the raw dataset: it's large and belongs on UCI/Kaggle,
+# not in version control. We keep the folder (via .gitkeep) but ignore
+# everything inside it.
+data/*
+!data/.gitkeep
+
+# ─── Python ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# ─── Virtual environment ────────────────────────────────
+.venv/
+venv/
+env/
+
+# ─── Model checkpoints / large artifacts ────────────────
+*.pt
+*.pth
+*.pkl
+*.h5
+
+# ─── OS / editor cruft ──────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/

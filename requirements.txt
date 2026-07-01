@@ -1,0 +1,22 @@
+# Core data science stack
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+
+# Notebook environment
+jupyter
+ipykernel
+
+# ─── Environment note ───────────────────────────────────
+# This project uses Python 3.12 (not 3.14): PyTorch publishes CUDA
+# wheels for 3.12 but not yet for 3.14. Create the venv with:
+#   py -3.12 -m venv .venv
+#
+# ─── Deep learning (Phase 4) — GPU build, installed later ─
+# GTX 1650 (CUDA). PyTorch bundles its own CUDA runtime, so the
+# system CUDA toolkit version does not matter — only the GPU driver.
+# Install when we reach the modeling phase:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+# torch==2.6.0+cu124
