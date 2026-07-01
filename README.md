@@ -69,6 +69,22 @@ windows (128 samples). Provided in two forms: **561 pre-computed features** and 
 
 ![Ensemble confusion matrix](reports/figures/ensemble_confusion_matrix.png)
 
+## Advanced experiments (v2)
+
+A second round ([full write-up](reports/07_advanced_experiments.md)) added hyperparameter
+tuning, an LSTM, Leave-One-Subject-Out CV, per-sample error analysis, and significance
+testing:
+
+![Leave-One-Subject-Out accuracy](reports/figures/loso_boxplot.png)
+
+- **RF ≈ CNN — statistically tied** under Leave-One-Subject-Out CV (RF 0.936 ± 0.057,
+  CNN 0.940 ± 0.076); the **LSTM is significantly worse** (0.910 ± 0.093).
+- A "significant" CNN-beats-RF result on the fixed split (McNemar p = 0.0002) **dissolves
+  into a tie** under subject-level testing (Wilcoxon p = 0.60) — a single split can
+  manufacture false significance.
+- The real limits are **per-subject variance** (worst subjects ~0.73), the **sitting/standing
+  sensor limit**, and **fixed-window transition artifacts** — not model choice.
+
 ## Interactive demo
 
 An accessibility-focused Streamlit app (light high-contrast theme, large text,
@@ -135,3 +151,4 @@ python src/download_data.py
 - [x] Phase 4 — Modeling ([baseline](reports/04_modeling_baseline.md) + [deep](reports/05_modeling_deep.md))
 - [x] Phase 5 — Evaluation ([summary](reports/06_evaluation.md))
 - [x] Phase 6 — Communication (this README + limitations); *Streamlit demo optional/next*
+- [x] Advanced experiments (v2) — [tuning, LSTM, LOSO-CV, statistical tests](reports/07_advanced_experiments.md)
