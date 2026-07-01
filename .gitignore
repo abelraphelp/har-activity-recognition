@@ -22,7 +22,8 @@ env/
 *.pkl
 *.h5
 
-# ─── OS / editor cruft ──────────────────────────────────
+# ─── OS / editor / tooling cruft ────────────────────────
 .DS_Store
 Thumbs.db
 .vscode/
+.claude/settings.local.json

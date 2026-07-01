@@ -1,0 +1,7 @@
+# Normalize line endings: store text as LF in the repo, check out
+# native on each OS. Silences the "LF will be replaced by CRLF" warning
+# and keeps diffs clean across Windows/Linux/Mac.
+* text=auto
+
+# Jupyter notebooks are JSON — treat as text so diffs work.
+*.ipynb text
