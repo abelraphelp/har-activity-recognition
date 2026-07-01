@@ -37,7 +37,7 @@ just producing numbers.
 - [x] Phase 2 — Data Understanding ([write-up](reports/02_data_understanding.md))
 - [x] Phase 3 — Data Preparation ([write-up](reports/03_data_preparation.md))
 - [x] Phase 4 — Modeling — [baseline: RF 92.87%](reports/04_modeling_baseline.md) + [CNN 93.35%](reports/05_modeling_deep.md)
-- [ ] Phase 5 — Evaluation
+- [x] Phase 5 — Evaluation ([summary](reports/06_evaluation.md)) — best model **ensemble 94.9%**, subject-wise CV 0.938 ± 0.022
 - [ ] Phase 6 — Deployment / Communication
 
 ## Reproducing this project
