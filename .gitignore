@@ -28,3 +28,4 @@ models/
 Thumbs.db
 .vscode/
 .claude/settings.local.json
+.claude/launch.json

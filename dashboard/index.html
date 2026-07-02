@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HAR — Results Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#080B14; --surface:#111827; --surface-2:#171f30; --border:#26304a;
+    --text:#E6EDF3; --muted:#9AA7BD;
+    --primary:#3B82F6; --primary-2:#60A5FA; --accent:#F59E0B;
+    --success:#34D399; --danger:#F87171; --gray:#8B98AD;
+    --r:14px; --sp:clamp(16px,3vw,28px);
+    --font:'Fira Sans',system-ui,sans-serif; --mono:'Fira Code',monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);font-family:var(--font);
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(1200px 600px at 80% -10%, rgba(59,130,246,.10), transparent 60%),
+                     radial-gradient(900px 500px at 0% 0%, rgba(245,158,11,.06), transparent 55%);
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:var(--sp)}
+  a{color:var(--primary-2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  :focus-visible{outline:2px solid var(--primary-2);outline-offset:2px;border-radius:6px}
+
+  header.hero{padding:calc(var(--sp)*1.4) 0 var(--sp)}
+  .eyebrow{font-family:var(--mono);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(1.9rem,5vw,3rem);margin:.3em 0 .2em;font-weight:700;letter-spacing:-.02em}
+  .lede{color:var(--muted);max-width:65ch;font-size:1.05rem}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .badge{font-family:var(--mono);font-size:.75rem;padding:5px 11px;border:1px solid var(--border);
+    border-radius:999px;color:var(--muted);background:var(--surface)}
+  .badge.live{color:var(--success);border-color:rgba(52,211,153,.4)}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:26px 0}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+  .kpi .v{font-family:var(--mono);font-size:1.9rem;font-weight:700;color:var(--primary-2)}
+  .kpi .v.accent{color:var(--accent)}
+  .kpi .l{color:var(--muted);font-size:.82rem;margin-top:2px}
+
+  section{margin:calc(var(--sp)*1.3) 0}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+  .sec-head h2{font-size:1.4rem;margin:0;font-weight:600;letter-spacing:-.01em}
+  .sec-head .n{font-family:var(--mono);color:var(--accent);font-size:.9rem}
+  .sec-sub{color:var(--muted);margin:0 0 18px;max-width:75ch}
+
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+  .card h3{margin:0 0 4px;font-size:1.02rem;font-weight:600}
+  .card p.note{color:var(--muted);font-size:.86rem;margin:.2em 0 14px}
+  .chart-box{position:relative;height:320px}
+  .chart-box.tall{height:360px}
+
+  figure{margin:0}
+  figure img{width:100%;border-radius:10px;border:1px solid var(--border);background:#fff}
+  figcaption{color:var(--muted);font-size:.82rem;margin-top:8px}
+
+  .findings{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .finding{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--primary);
+    border-radius:10px;padding:16px 18px}
+  .finding.amber{border-left-color:var(--accent)}
+  .finding.green{border-left-color:var(--success)}
+  .finding h4{margin:0 0 6px;font-size:.98rem}
+  .finding p{margin:0;color:var(--muted);font-size:.88rem}
+
+  table.stat{width:100%;border-collapse:collapse;font-size:.9rem}
+  table.stat th,table.stat td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+  table.stat th{color:var(--muted);font-weight:500;font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+  table.stat td.num{font-family:var(--mono);text-align:right}
+  .tag{font-family:var(--mono);font-size:.72rem;padding:2px 8px;border-radius:6px}
+  .tag.win{background:rgba(52,211,153,.14);color:var(--success)}
+  .tag.tie{background:rgba(154,167,189,.14);color:var(--gray)}
+  .tag.sig{background:rgba(245,158,11,.14);color:var(--accent)}
+
+  footer{border-top:1px solid var(--border);margin-top:40px;padding:24px 0;color:var(--muted);font-size:.85rem}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Human Activity Recognition · Portfolio</div>
+    <h1>HAR Results Dashboard</h1>
+    <p class="lede">Classifying physical activities from wearable IMU signals across two datasets —
+      with an emphasis on honest, subject-independent evaluation over headline accuracy.</p>
+    <div class="badges">
+      <span class="badge">CRISP-DM</span>
+      <span class="badge">Random Forest · CNN · LSTM · Ensemble</span>
+      <span class="badge">UCI HAR + PAMAP2</span>
+      <span class="badge live">● subject-independent</span>
+      <a class="badge" href="https://github.com/abelraphelp/har-activity-recognition">GitHub ↗</a>
+    </div>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v accent">94.9%</div><div class="l">Best accuracy (ensemble, unseen subjects)</div></div>
+    <div class="kpi"><div class="v">0.950</div><div class="l">Best macro-F1</div></div>
+    <div class="kpi"><div class="v">4</div><div class="l">Models compared</div></div>
+    <div class="kpi"><div class="v">2</div><div class="l">Datasets</div></div>
+    <div class="kpi"><div class="v">39</div><div class="l">Subjects evaluated (30 + 9)</div></div>
+  </div>
+
+  <!-- MODEL COMPARISON -->
+  <section id="models">
+    <div class="sec-head"><span class="n">01</span><h2>Model comparison</h2></div>
+    <p class="sec-sub">UCI HAR test set (9 held-out subjects). Every fancier model must justify itself
+      against the Random Forest baseline on hand-crafted features.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Accuracy &amp; macro-F1</h3>
+        <p class="note">Ensemble (RF + CNN) is best; the LSTM is the weakest deep model.</p>
+        <div class="chart-box"><canvas id="cModels" aria-label="Bar chart of accuracy and macro-F1 per model"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Per-class recall vs targets</h3>
+        <p class="note">RF is a posture specialist, the CNN a motion specialist — complementary.</p>
+        <div class="chart-box"><canvas id="cRecall" aria-label="Grouped bar chart of per-class recall for RF, CNN, ensemble"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROBUSTNESS -->
+  <section id="robustness">
+    <div class="sec-head"><span class="n">02</span><h2>Robustness — the honest picture</h2></div>
+    <p class="sec-sub">A single train/test split can mislead. Leave-One-Subject-Out cross-validation and
+      significance testing reveal that the models are statistically tied — and that per-subject variance
+      is the real challenge.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Significance testing</h3>
+        <p class="note">A "significant" fixed-split result dissolves into a tie under subject-level CV.</p>
+        <table class="stat">
+          <thead><tr><th>Comparison</th><th>Test</th><th>p-value</th><th>Verdict</th></tr></thead>
+          <tbody>
+            <tr><td>CNN vs RF (fixed split)</td><td>McNemar</td><td class="num">0.0002</td><td><span class="tag sig">CNN &gt; RF</span></td></tr>
+            <tr><td>CNN vs RF (all 30 subjects)</td><td>Wilcoxon LOSO</td><td class="num">0.60</td><td><span class="tag tie">tie</span></td></tr>
+            <tr><td>CNN vs LSTM (all 30 subjects)</td><td>Wilcoxon LOSO</td><td class="num">0.0045</td><td><span class="tag win">CNN &gt; LSTM</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat" style="margin-top:14px">
+          <thead><tr><th>Model</th><th>LOSO accuracy</th><th>Worst subj.</th></tr></thead>
+          <tbody>
+            <tr><td>CNN</td><td class="num">0.940 ± 0.076</td><td class="num">0.73</td></tr>
+            <tr><td>Random Forest</td><td class="num">0.936 ± 0.057</td><td class="num">0.79</td></tr>
+            <tr><td>LSTM</td><td class="num">0.910 ± 0.093</td><td class="num">0.66</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>PAMAP2 · per-subject generalization</h3>
+        <p class="note">Leave-One-Subject-Out on a harder dataset: ~0.81 for typical people, but subject 108 collapses.</p>
+        <div class="chart-box"><canvas id="cPamap" aria-label="Bar chart of PAMAP2 per-subject leave-one-out accuracy"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANSITION EXPERIMENT -->
+  <section id="transitions">
+    <div class="sec-head"><span class="n">03</span><h2>Transition-aware windowing</h2></div>
+    <p class="sec-sub">A hypothesis from the UCI HAR error analysis, tested on PAMAP2: windows that straddle
+      an activity transition carry no coherent single-activity signal.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Transition windows are near-unclassifiable</h3>
+        <p class="note">Same model, PAMAP2 test subjects: clean vs boundary windows (12-class chance ≈ 0.083).</p>
+        <div class="chart-box"><canvas id="cTrans" aria-label="Bar chart comparing accuracy on clean vs transition windows"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Confusion matrix — ensemble (UCI HAR)</h3>
+        <p class="note">Block-diagonal: motion vs static never confused; SITTING↔STANDING is the sole soft spot.</p>
+        <figure>
+          <img src="../reports/figures/ensemble_confusion_matrix.png"
+               alt="Ensemble confusion matrix showing strong diagonal and a sitting-standing confusion" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FINDINGS -->
+  <section id="findings">
+    <div class="sec-head"><span class="n">04</span><h2>Key findings</h2></div>
+    <div class="findings">
+      <div class="finding green">
+        <h4>Complementary specialists</h4>
+        <p>The CNN fixed the baseline's worst class (downstairs recall 0.86 → 0.97) while the RF kept static
+          postures cleaner. Their ensemble beats either alone.</p>
+      </div>
+      <div class="finding amber">
+        <h4>Single splits can lie</h4>
+        <p>A McNemar-significant CNN&gt;RF result (p=0.0002) became a statistical tie under Leave-One-Subject-Out
+          (Wilcoxon p=0.60). Only subject-level CV is trustworthy.</p>
+      </div>
+      <div class="finding">
+        <h4>Per-subject variance is the real challenge</h4>
+        <p>On PAMAP2, most subjects reach ~0.81 but one collapses to 0.30 — a domain shift a care system
+          could not tolerate. Aggregate accuracy hides it.</p>
+      </div>
+      <div class="finding amber">
+        <h4>Transitions confirmed</h4>
+        <p>Boundary-straddling windows score 0.075 (≈ chance) vs 0.837 for clean windows — mechanistically
+          confirming the transition hypothesis across datasets.</p>
+      </div>
+      <div class="finding">
+        <h4>A sensor limit, not a bug</h4>
+        <p>Sitting vs standing are two motionless upright postures with near-identical gravity signatures —
+          no model exceeds ~0.89 recall; the information isn't in the signal.</p>
+      </div>
+      <div class="finding green">
+        <h4>Tuning: know when to stop</h4>
+        <p>RF tuning gained nothing (within CV noise); CNN tuning gained ~1 point via regularization.
+          Neural nets are far more tuning-sensitive than forests.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built by Abel Raphel Pulikottil · CRISP-DM · Random Forest + PyTorch CNN/LSTM + ensemble ·
+    UCI HAR &amp; PAMAP2 · <a href="https://github.com/abelraphelp/har-activity-recognition">source on GitHub ↗</a>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const css = getComputedStyle(document.documentElement);
+  const C = n => css.getPropertyValue(n).trim();
+  const primary=C('--primary'), accent=C('--accent'), success=C('--success'),
+        gray=C('--gray'), danger=C('--danger'), text=C('--text'), muted=C('--muted'),
+        border=C('--border');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  Chart.defaults.color = muted;
+  Chart.defaults.font.family = "'Fira Sans', sans-serif";
+  Chart.defaults.borderColor = border;
+  Chart.defaults.animation = reduce ? false : {duration:600};
+
+  const grid = {color:'rgba(255,255,255,0.06)'};
+  const pct = {min:0, max:1, ticks:{callback:v=>(v*100)+'%'}, grid};
+
+  // 01 — model comparison
+  new Chart(document.getElementById('cModels'), {
+    type:'bar',
+    data:{ labels:['Random Forest','CNN (tuned)','LSTM','Ensemble'],
+      datasets:[
+        {label:'Accuracy', data:[0.9287,0.9450,0.8945,0.9491], backgroundColor:primary, borderRadius:6},
+        {label:'Macro-F1', data:[0.927,0.9449,0.8947,0.950], backgroundColor:accent, borderRadius:6}
+      ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{...pct, min:0.8}, x:{grid:{display:false}}},
+      plugins:{legend:{position:'top'},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y*100).toFixed(2)+'%'}}}}
+  });
+
+  // 01 — per-class recall
+  new Chart(document.getElementById('cRecall'), {
+    type:'bar',
+    data:{ labels:['Walking','Upstairs','Downstairs','Sitting','Standing','Laying'],
+      datasets:[
+        {label:'RF', data:[0.976,0.915,0.857,0.886,0.921,1.000], backgroundColor:accent, borderRadius:4},
+        {label:'CNN', data:[0.978,0.962,0.974,0.823,0.921,0.950], backgroundColor:primary, borderRadius:4},
+        {label:'Ensemble', data:[0.992,0.975,0.993,0.833,0.940,0.968], backgroundColor:success, borderRadius:4}
+      ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{...pct,min:0.75}, x:{grid:{display:false},ticks:{maxRotation:45,minRotation:30}}},
+      plugins:{legend:{position:'top'},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y*100).toFixed(1)+'%'}}}}
+  });
+
+  // 02 — PAMAP2 per-subject LOSO
+  const pAcc=[0.788,0.738,0.810,0.782,0.863,0.877,0.818,0.298,0.833];
+  const pLab=['101','102','103','104','105','106','107','108','109'];
+  new Chart(document.getElementById('cPamap'), {
+    type:'bar',
+    data:{ labels:pLab, datasets:[{label:'Accuracy',
+      data:pAcc, backgroundColor:pAcc.map(a=>a<0.5?danger:primary), borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{...pct}, x:{grid:{display:false},title:{display:true,text:'held-out subject'}}},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>'acc '+(c.parsed.y*100).toFixed(1)+'%'}},
+        }}
+  });
+
+  // 03 — transition experiment
+  new Chart(document.getElementById('cTrans'), {
+    type:'bar',
+    data:{ labels:['Clean\n(single activity)','Boundary\n(transition)'],
+      datasets:[{data:[0.837,0.075], backgroundColor:[success,danger], borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{y:{...pct}, x:{grid:{display:false}}},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>(c.parsed.y*100).toFixed(1)+'%'}}}}
+  });
+})();
+</script>
+</body>
+</html>

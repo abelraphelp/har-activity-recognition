@@ -100,6 +100,18 @@ Applying the pipeline to a raw, harder dataset ([full write-up](reports/08_pamap
   hypothesis from the UCI HAR error analysis. They are rare in this lab protocol (~1.4%),
   so the overall gain is small, but the effect would be large in free-living data.
 
+## Results dashboard
+
+A self-contained **analytics dashboard** ([`dashboard/index.html`](dashboard/index.html)) —
+dark theme, Chart.js — summarizes every result: KPIs, model comparison, per-class recall,
+PAMAP2 per-subject generalization, the transition experiment, significance tests, and key
+findings. Open it directly in a browser, or serve the repo root and visit
+`/dashboard/index.html`:
+
+```bash
+python -m http.server 8000   # then open http://localhost:8000/dashboard/index.html
+```
+
 ## Interactive demo
 
 An accessibility-focused Streamlit app (light high-contrast theme, large text,
